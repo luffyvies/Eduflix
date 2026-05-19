@@ -1,27 +1,30 @@
 import axios from "axios";
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY; // Ganti dengan API Key milikmu
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
 const tmdbApi = axios.create({
   baseURL: BASE_URL,
   params: {
     api_key: API_KEY,
-    language: "id-ID", // Data dalam Bahasa Indonesia jika tersedia
+    language: "id-ID",
   },
 });
 
-export const getMoviesByGenre = async (genreId) => {
+// 🎬 GET MOVIE BY GENRE + FILTER RATING LANGSUNG DARI TMDB
+export const getMoviesByGenre = async (genreId, page = 1, certificationMax = "PG-13") => {
   try {
     const response = await tmdbApi.get("/discover/movie", {
       params: {
         with_genres: genreId,
-        // Filter Utama: Rating PG-13 (cocok untuk usia 13+)
-        certification_country: "US",
-        "certification.lte": "PG-13",
         sort_by: "popularity.desc",
+        include_adult: false,
+        page: page,
+        certification_country: "US",       // ← pakai sistem rating US sebagai referensi
+        "certification.lte": certificationMax, // ← filter maks rating dari TMDB langsung
       },
     });
+
     return response.data.results;
   } catch (error) {
     console.error("Gagal mengambil data film:", error);
@@ -29,19 +32,19 @@ export const getMoviesByGenre = async (genreId) => {
   }
 };
 
+// 🔍 SEARCH MOVIE
 export const searchMovies = async (query) => {
   try {
     const response = await tmdbApi.get("/search/movie", {
       params: {
         query: query,
-        include_adult: false, // Filter bawaan TMDB untuk memblokir film dewasa
-        language: "id-ID",
+        include_adult: false,
       },
     });
-    // Opsional: Filter tambahan di sisi klien (Client-side) jika ingin lebih ketat
-    // Misalnya membuang film horror/thriller yang mungkin lolos
+
+    // 🔥 filter tambahan biar lebih aman (opsional)
     const safeResults = response.data.results.filter(
-      (movie) => !movie.genre_ids.includes(27), // 27 adalah ID untuk Horror
+      (movie) => !movie.genre_ids.includes(27) // buang horror
     );
 
     return safeResults;
@@ -51,12 +54,31 @@ export const searchMovies = async (query) => {
   }
 };
 
+// 🎬 DETAIL FILM
 export const getMovieDetails = async (movieId) => {
   try {
     const response = await tmdbApi.get(`/movie/${movieId}`, {
-      params: { append_to_response: "watch/providers" },
+      params: {
+        append_to_response: "watch/providers,release_dates",
+      },
     });
-    return response.data;
+
+    // 🔥 ambil data US rating
+    const usRelease = response.data.release_dates.results.find(
+      (r) => r.iso_3166_1 === "US"
+    );
+
+    let certification = "Unknown";
+
+    if (usRelease && usRelease.release_dates.length > 0) {
+      certification =
+        usRelease.release_dates[0].certification || "Unknown";
+    }
+
+    return {
+      ...response.data,
+      ageRating: certification,
+    };
   } catch (error) {
     console.error("Gagal mengambil detail film:", error);
     return null;

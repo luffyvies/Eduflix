@@ -1,0 +1,59 @@
+/* RESET DASAR */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+  font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  background-color: #FEFAD5;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* HEADING */
+h1, h2, h3 {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+/* BUTTON GLOBAL */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* SCROLLBAR (biar lebih aesthetic) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #66A2D0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FEFAD5;
+}
+
+/* ANIMASI GLOBAL */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); }
+  to { transform: scale(1); }
+}
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }

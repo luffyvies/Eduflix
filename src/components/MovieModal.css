@@ -4,47 +4,89 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(61, 64, 91, 0.6); /* overlay pakai warna text palette B, lebih soft */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
 }
+
 .modal-content {
-  background: #1a1a2e;
+  background: #F0EBFF;              /* lavender muda — nyambung sama halaman lain */
+  border: 2px solid #FFB4A2;        /* border peach */
   width: 100%;
   max-width: 800px;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 20px 60px rgba(61, 64, 91, 0.2);
 }
+
 .modal-body {
   display: flex;
   gap: 24px;
   padding: 30px;
 }
+
 .modal-body img {
   width: 250px;
   border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
+
+/* Judul film */
+.modal-body h2 {
+  color: #3D6B6D;        /* teal gelap */
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+/* Teks biasa dalam modal */
+.modal-body p {
+  color: #3D405B;        /* warna teks utama palette B */
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* Label "Rating Usia:", "Sinopsis:", dll */
+.modal-body span,
+.modal-body label {
+  color: #6B7080;        /* abu-abu soft */
+}
+
 .platform-list {
   display: flex;
   gap: 12px;
   margin-top: 10px;
 }
+
 .platform-list img {
   width: 40px;
   height: 40px;
   border-radius: 8px;
+  border: 1.5px solid #A8DADC;    /* border aqua di logo platform */
+  transition: transform 0.2s;
 }
-/* Tambahkan Responsive Mobile */
+
+.platform-list img:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive Mobile */
 @media (max-width: 768px) {
   .modal-body {
     flex-direction: column;
     align-items: center;
   }
+
   .modal-body img {
     width: 150px;
+  }
+
+  .modal-body h2 {
+    font-size: 18px;
+    text-align: center;
   }
 }
