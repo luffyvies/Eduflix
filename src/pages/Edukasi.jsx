@@ -74,7 +74,7 @@ const data = [
       "Tema & Pesan": "Ide utama yang ingin disampaikan sutradara. Contoh: Wall-E → jaga lingkungan. Laskar Pelangi → semangat belajar meski terbatas. Inilah yang membuat film bermakna lebih dari hiburan.",
       "Latar": "Setting mencakup tempat, waktu, dan suasana cerita berlangsung. Production designer bertugas merancang semua elemen visual setting.",
       "close-up": "Pengambilan gambar sangat dekat, biasanya fokus ke wajah. Digunakan untuk menunjukkan emosi detail — salah satu teknik paling powerful dalam bercerita lewat film.",
-      "wide shot": "Mengambil gambar dari jarak jauh untuk menampilkan keseluruhan karakter dan lingkungannya. Digunakan memperkenalkan lokasi baru atau menunjukkan skala.",
+      "wide shot": "Mengambil gambar dari jarak jauh untuk menampilkan keseluruhan karakter and lingkungannya. Digunakan memperkenalkan lokasi baru atau menunjukkan skala.",
       "POV": "Point of View — kamera mewakili sudut pandang mata karakter. Penonton seolah melihat langsung dari mata sang tokoh, membuat lebih empati dan terlibat.",
     }
   },
@@ -109,7 +109,6 @@ const data = [
   }
 ];
 
-// ── WARNA PALETTE B ──
 const C = {
   page: "#F8F4FF",
   card: "#B5EAD7",
@@ -130,7 +129,6 @@ const C = {
   teal: "#5C9EA1",
 };
 
-// ── RENDERABLE TEXT dengan kata kunci yang bisa diklik ──
 function RenderableText({ text, terms, onClickTerm }) {
   const allMatches = [];
   for (const term of Object.keys(terms)) {
@@ -163,16 +161,18 @@ function RenderableText({ text, terms, onClickTerm }) {
       <span
         key={`term-${match.index}`}
         onClick={(e) => { e.stopPropagation(); onClickTerm(match.term, e); }}
+        className="interactive-keyword"
         style={{
           background: C.keyword,
           color: C.keywordText,
           borderRadius: "6px",
-          padding: "2px 8px",
+          padding: "4px 8px",
           cursor: "pointer",
           fontWeight: "700",
-          fontSize: "14px",
+          fontSize: "13px",
           border: `1.5px solid ${C.keywordBorder}`,
           display: "inline-block",
+          margin: "2px 3px",
           transition: "all 0.15s",
           textDecoration: "underline dotted",
         }}
@@ -206,11 +206,18 @@ function Edukasi() {
   const handleClickTerm = (term, e) => {
     if (bubble && bubble.term === term) { setBubble(null); return; }
     const rect = e.currentTarget.getBoundingClientRect();
+    
+    // Mencegah bubble terpotong keluar batas kanan layar HP
+    let targetX = rect.left + window.scrollX;
+    if (targetX + 290 > window.innerWidth) {
+      targetX = window.innerWidth - 310;
+    }
+
     setBubble({
       term,
       explanation: selected.terms[term],
-      x: rect.left + window.scrollX,
-      y: rect.bottom + window.scrollY + 10,
+      x: Math.max(10, targetX),
+      y: rect.bottom + window.scrollY + 8,
     });
   };
 
@@ -218,41 +225,45 @@ function Edukasi() {
   const closeBubble = () => setBubble(null);
 
   return (
-    <div style={{ padding: "36px 24px", fontFamily: "'Segoe UI', Tahoma, sans-serif" }}>
+    <div className="edu-container" style={{ padding: "30px 16px", fontFamily: "'Segoe UI', Tahoma, sans-serif", maxWidth: "1200px", margin: "0 auto" }}>
 
       {/* HEADER */}
-      <h1 style={{ textAlign: "center", color: C.teal, marginBottom: "6px", fontSize: "30px", fontWeight: "800" }}>
+      <h1 className="edu-title" style={{ textAlign: "center", color: C.teal, marginBottom: "8px", fontSize: "28px", fontWeight: "800" }}>
         🎬 Movie Education
       </h1>
-      <p style={{ textAlign: "center", color: C.textSub, fontSize: "15px", marginBottom: "10px" }}>
+      <p style={{ textAlign: "center", color: C.textSub, fontSize: "14px", marginBottom: "14px", padding: "0 10px", lineHeight: "1.4" }}>
         Klik kartu untuk membaca penjelasan lebih lengkap!
       </p>
-      <div style={{ textAlign: "center", marginBottom: "34px" }}>
-        <span style={{
-          background: C.keyword, borderRadius: "20px", padding: "6px 16px",
-          fontSize: "13px", color: C.keywordText, fontWeight: "700",
+      
+      {/* KOTAK ORANYE (DIBUAT RESPONSIF ELASTIS) */}
+      <div style={{ textAlign: "center", marginBottom: "30px", display: "flex", justifyContent: "center" }}>
+        <span className="edu-badge" style={{
+          background: C.keyword, 
+          borderRadius: "12px", 
+          padding: "8px 14px",
+          fontSize: "12px", 
+          color: C.keywordText, 
+          fontWeight: "700",
           border: `1px solid ${C.keywordBorder}`,
+          maxWidth: "90%",
+          lineHeight: "1.4",
+          display: "inline-block"
         }}>
           ✦ Klik kata berwarna di dalam penjelasan untuk detail lebih lanjut
         </span>
       </div>
 
-      {/* GRID KARTU */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-        gap: "20px",
-        maxWidth: "1050px",
-        margin: "0 auto",
-      }}>
+      {/* GRID KARTU (MOBILE FRIENDLY) */}
+      <div className="edu-grid">
         {data.map((item, index) => (
           <div
             key={index}
             onClick={() => { setSelected(item); setBubble(null); }}
+            className="edu-card"
             style={{
               background: C.card,
               borderRadius: "18px",
-              padding: "26px 22px",
+              padding: "22px 20px",
               cursor: "pointer",
               transition: "all 0.3s ease",
               boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
@@ -271,24 +282,17 @@ function Edukasi() {
               e.currentTarget.style.border = "2px solid transparent";
             }}
           >
-            {/* Emoji besar */}
-            <div style={{ fontSize: "48px", marginBottom: "14px", lineHeight: 1 }}>
-              {item.emoji}
-            </div>
-            <h2 style={{ margin: "0 0 8px", fontSize: "17px", color: C.text, fontWeight: "700" }}>
-              {item.title}
-            </h2>
-            <p style={{ margin: "0 0 14px", fontSize: "14px", color: C.textSub, lineHeight: "1.6" }}>
-              {item.short}
-            </p>
+            <div style={{ fontSize: "40px", marginBottom: "12px", lineHeight: 1 }}>{item.emoji}</div>
+            <h2 style={{ margin: "0 0 6px", fontSize: "16px", color: C.text, fontWeight: "700" }}>{item.title}</h2>
+            <p style={{ margin: "0 0 12px", fontSize: "13px", color: C.textSub, lineHeight: "1.5" }}>{item.short}</p>
             <p style={{ margin: 0, fontSize: "12px", color: C.teal, fontWeight: "700" }}>
-              💬 {Object.keys(item.terms).length} kata kunci interaktif →
+              💬 {Object.keys(item.terms).length} kata kunci →
             </p>
           </div>
         ))}
       </div>
 
-      {/* MODAL */}
+      {/* MODAL RESPONSIVE */}
       {selected && (
         <div
           onClick={closeModal}
@@ -297,40 +301,41 @@ function Edukasi() {
             top: 0, left: 0, width: "100%", height: "100%",
             background: "rgba(61,64,91,0.5)",
             display: "flex", justifyContent: "center", alignItems: "center",
-            animation: "fadeIn 0.3s ease",
             zIndex: 100,
+            padding: "12px",
+            boxSizing: "border-box"
           }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
+            className="edu-modal-content"
             style={{
               background: C.modal,
-              padding: "32px",
-              borderRadius: "22px",
-              maxWidth: "650px",
-              width: "92%",
-              maxHeight: "83vh",
+              padding: "24px",
+              borderRadius: "20px",
+              maxWidth: "580px",
+              width: "100%",
+              maxHeight: "85vh",
               overflowY: "auto",
               boxShadow: "0 24px 60px rgba(0,0,0,0.16)",
-              animation: "scaleIn 0.3s ease",
               border: `2px solid ${C.accent}`,
+              boxSizing: "border-box"
             }}
           >
-            <div style={{ fontSize: "52px", marginBottom: "12px" }}>{selected.emoji}</div>
-            <h2 style={{ color: C.teal, marginTop: 0, fontSize: "23px", fontWeight: "800" }}>
+            <div style={{ fontSize: "44px", marginBottom: "8px" }}>{selected.emoji}</div>
+            <h2 style={{ color: C.teal, marginTop: 0, fontSize: "20px", fontWeight: "800", marginBottom: "14px" }}>
               {selected.title}
             </h2>
 
-            {/* Hint bar */}
             <div style={{
-              background: C.keyword, borderRadius: "10px", padding: "10px 16px",
-              marginBottom: "20px", fontSize: "13px", color: C.keywordText,
-              fontWeight: "700", border: `1px solid ${C.keywordBorder}`,
+              background: C.keyword, borderRadius: "8px", padding: "8px 12px",
+              marginBottom: "16px", fontSize: "12px", color: C.keywordText,
+              fontWeight: "700", border: `1px solid ${C.keywordBorder}`, lineHeight: "1.4"
             }}>
               ✦ Klik kata yang disorot untuk penjelasan lebih detail!
             </div>
 
-            <p style={{ lineHeight: "2.1", fontSize: "15px", color: C.text, margin: 0 }}>
+            <p style={{ lineHeight: "1.9", fontSize: "14px", color: C.text, margin: 0 }}>
               <RenderableText
                 text={selected.full}
                 terms={selected.terms}
@@ -341,10 +346,10 @@ function Edukasi() {
             <button
               onClick={closeModal}
               style={{
-                marginTop: "24px", background: C.teal, color: "white",
-                border: "none", padding: "12px 26px", borderRadius: "12px",
+                marginTop: "20px", background: C.teal, color: "white",
+                border: "none", padding: "10px 22px", borderRadius: "10px",
                 cursor: "pointer", transition: "0.3s", fontWeight: "700",
-                fontSize: "15px", fontFamily: "inherit",
+                fontSize: "14px", fontFamily: "inherit", width: "100%"
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = C.btnHoverBg; e.currentTarget.style.color = C.btnHoverText; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = C.teal; e.currentTarget.style.color = "white"; }}
@@ -355,47 +360,68 @@ function Edukasi() {
         </div>
       )}
 
-      {/* BUBBLE TOOLTIP */}
+      {/* BUBBLE TOOLTIP RESPONSIVE */}
       {bubble && (
         <div
           style={{
             position: "absolute",
             top: bubble.y,
-            left: Math.min(bubble.x, window.innerWidth - 360),
-            width: "335px",
+            left: bubble.x,
+            width: "280px",
             background: "white",
             border: `2px solid ${C.bubbleBorder}`,
-            borderRadius: "16px",
-            padding: "18px 20px",
+            borderRadius: "14px",
+            padding: "14px 16px",
             boxShadow: "0 12px 36px rgba(0,0,0,0.14)",
             zIndex: 200,
-            animation: "scaleIn 0.2s ease",
+            boxSizing: "border-box"
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
             <span style={{
               background: C.keyword, color: C.keywordText,
-              padding: "4px 14px", borderRadius: "20px",
-              fontWeight: "800", fontSize: "13px",
+              padding: "3px 10px", borderRadius: "20px",
+              fontWeight: "800", fontSize: "11px",
               border: `1px solid ${C.keywordBorder}`,
             }}>
               ✦ {bubble.term}
             </span>
             <button
               onClick={closeBubble}
-              style={{ background: "none", border: "none", fontSize: "22px", cursor: "pointer", color: "#aaa", padding: "0 4px" }}
+              style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "#aaa", padding: "0" }}
             >×</button>
           </div>
-          <p style={{ margin: 0, fontSize: "14px", color: C.text, lineHeight: "1.75" }}>
+          <p style={{ margin: 0, fontSize: "13px", color: C.text, lineHeight: "1.6" }}>
             {bubble.explanation}
           </p>
         </div>
       )}
 
+      {/* INJECT MEDIA QUERIES SECARA AMAN */}
       <style>{`
-        @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scaleIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .edu-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 20px;
+          max-width: 1050px;
+          margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+          .edu-title { font-size: 24px !important; }
+          .edu-container { padding: 16px 12px !important; }
+          .edu-badge { width: 100% !important; font-size: 11px !important; padding: 6px 10px !important; }
+          .edu-grid { 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; 
+            gap: 12px !important; 
+          }
+          .edu-card { padding: 16px 14px !important; border-radius: 14px !important; }
+          .edu-card h2 { font-size: 14px !important; }
+          .edu-card p { font-size: 12px !important; }
+          .edu-modal-content { padding: 20px 16px !important; width: 96% !important; }
+          .interactive-keyword { font-size: 12px !important; padding: 1px 5px !important; }
+        }
       `}</style>
     </div>
   );
