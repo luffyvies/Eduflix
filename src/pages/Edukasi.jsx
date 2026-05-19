@@ -354,7 +354,7 @@ function Edukasi() {
               onMouseEnter={(e) => { e.currentTarget.style.background = C.btnHoverBg; e.currentTarget.style.color = C.btnHoverText; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = C.teal; e.currentTarget.style.color = "white"; }}
             >
-              ✕
+              Tutup
             </button>
           </div>
         </div>
