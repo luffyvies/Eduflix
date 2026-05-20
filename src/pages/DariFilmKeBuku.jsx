@@ -830,7 +830,7 @@ function ModalDetail({ item, onTutup }) {
             }}
           >
             <p style={{ margin: "0 0 8px", fontWeight: "800", fontSize: "14px", color: "#2D5A3F" }}>
-              Cek di Perpustakaan Al-Falah
+              Cek di Perpustakaan SMP Al-Falah
             </p>
             <p style={{ margin: "0 0 14px", fontSize: "13px", color: WARNA.teks, lineHeight: "1.65" }}>
               {item.caraCari}
