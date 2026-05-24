@@ -20,6 +20,38 @@ const daftarFilm = [
       "Buku menggambarkan suasana kota Surabaya saat itu dengan detail yang lebih kaya.",
       "Pesan nasionalisme dan semangat kemerdekaan terasa lebih personal saat dibaca di novel.",
     ],
+    quiz: [
+      {
+        soal: "Apa pekerjaan tokoh utama Musa di awal cerita?",
+        pilihan: ["A. Penjual koran", "B. Penyemir sepatu", "C. Pengantar pos", "D. Tukang becak"],
+        jawaban: "B",
+        penjelasan: "Musa adalah seorang remaja penyemir sepatu yang kemudian terseret dalam pusaran pertempuran 10 November 1945.",
+      },
+      {
+        soal: "Pertempuran dalam cerita ini terjadi di kota mana?",
+        pilihan: ["A. Jakarta", "B. Bandung", "C. Surabaya", "D. Semarang"],
+        jawaban: "C",
+        penjelasan: "Pertempuran 10 November 1945 terjadi di Surabaya dan menjadi salah satu pertempuran paling heroik dalam sejarah kemerdekaan Indonesia.",
+      },
+      {
+        soal: "Film Battle of Surabaya menggunakan teknik animasi apa?",
+        pilihan: ["A. Animasi 3D CGI", "B. Animasi 2D", "C. Stop motion", "D. Live action"],
+        jawaban: "B",
+        penjelasan: "Film Battle of Surabaya menggunakan animasi 2D yang khas dan menjadi salah satu film animasi kebanggaan Indonesia.",
+      },
+      {
+        soal: "Tanggal berapa pertempuran heroik yang digambarkan dalam cerita ini terjadi?",
+        pilihan: ["A. 17 Agustus 1945", "B. 1 Oktober 1945", "C. 10 November 1945", "D. 20 Mei 1908"],
+        jawaban: "C",
+        penjelasan: "10 November 1945 adalah tanggal Pertempuran Surabaya yang kini diperingati sebagai Hari Pahlawan Nasional Indonesia.",
+      },
+      {
+        soal: "Apa pesan utama yang ingin disampaikan melalui cerita Battle of Surabaya?",
+        pilihan: ["A. Kehebatan teknologi militer", "B. Semangat nasionalisme dan perjuangan kemerdekaan", "C. Kritik terhadap pemerintah kolonial", "D. Kisah percintaan di masa perang"],
+        jawaban: "B",
+        penjelasan: "Pesan utama cerita ini adalah semangat nasionalisme dan perjuangan kemerdekaan yang membara, terutama digambarkan melalui tokoh rakyat biasa seperti Musa.",
+      },
+    ],
   },
   {
     emoji: "🔎",
@@ -703,6 +735,99 @@ function KartuFilm({ item, onKlik }) {
   );
 }
 
+
+function QuizBox({ quiz }) {
+  const [step, setStep] = useState(0);
+  const [dipilih, setDipilih] = useState(null);
+  const [sudahJawab, setSudahJawab] = useState(false);
+  const [skor, setSkor] = useState(0);
+  const [selesai, setSelesai] = useState(false);
+
+  const current = quiz[step];
+  const benar = dipilih && dipilih[0] === current.jawaban;
+
+  const handlePilih = (p) => {
+    if (sudahJawab) return;
+    setDipilih(p);
+    setSudahJawab(true);
+    if (p[0] === current.jawaban) setSkor((s) => s + 1);
+  };
+
+  const handleNext = () => {
+    if (step + 1 >= quiz.length) {
+      setSelesai(true);
+    } else {
+      setStep((s) => s + 1);
+      setDipilih(null);
+      setSudahJawab(false);
+    }
+  };
+
+  const handleUlang = () => {
+    setStep(0);
+    setDipilih(null);
+    setSudahJawab(false);
+    setSkor(0);
+    setSelesai(false);
+  };
+
+  const skorLabel = () => {
+    if (skor === quiz.length) return "Sempurna! Kamu benar-benar sudah baca bukunya! 🎉";
+    if (skor >= quiz.length * 0.6) return "Bagus! Coba baca bukunya untuk tahu lebih banyak 📖";
+    return "Yuk baca bukunya dulu, pasti makin paham! 😊";
+  };
+
+  if (selesai) {
+    return (
+      <div style={{ background: "#F0EBFF", borderRadius: "12px", padding: "18px", marginBottom: "22px", border: "1px solid #C4B5F4", textAlign: "center" }}>
+        <p style={{ fontSize: "32px", margin: "0 0 8px" }}>🏆</p>
+        <p style={{ fontWeight: "800", fontSize: "16px", color: "#5A4A8A", margin: "0 0 6px" }}>Skor Kamu: {skor}/{quiz.length}</p>
+        <p style={{ fontSize: "13px", color: "#3D405B", margin: "0 0 16px", lineHeight: "1.6" }}>{skorLabel()}</p>
+        <button onClick={handleUlang} style={{ background: "#5C9EA1", color: "white", border: "none", borderRadius: "8px", padding: "9px 20px", fontSize: "13px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
+          Ulangi Quiz
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: "#F0EBFF", borderRadius: "12px", padding: "16px 18px", marginBottom: "22px", border: "1px solid #C4B5F4" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+        <p style={{ margin: 0, fontWeight: "800", fontSize: "14px", color: "#5A4A8A" }}>🧠 Quiz Buku</p>
+        <span style={{ fontSize: "12px", color: "#6B7080", fontWeight: "700" }}>Soal {step + 1}/{quiz.length}</span>
+      </div>
+      <p style={{ margin: "0 0 12px", fontSize: "13px", color: "#3D405B", lineHeight: "1.6", fontWeight: "600" }}>{current.soal}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "12px" }}>
+        {current.pilihan.map((p, i) => {
+          let bg = "white", border = "1.5px solid #C4B5F4", color = "#3D405B";
+          if (sudahJawab) {
+            if (p[0] === current.jawaban) { bg = "#C8EFE0"; border = "1.5px solid #4A8B6F"; color = "#2D5A3F"; }
+            else if (p === dipilih && !benar) { bg = "#FFD6D6"; border = "1.5px solid #C0392B"; color = "#7A2828"; }
+          }
+          return (
+            <button key={i} onClick={() => handlePilih(p)}
+              style={{ background: bg, border, borderRadius: "8px", padding: "9px 12px", fontSize: "13px", color, fontWeight: "600", cursor: sudahJawab ? "default" : "pointer", textAlign: "left", fontFamily: "inherit", transition: "all 0.2s" }}>
+              {p}
+            </button>
+          );
+        })}
+      </div>
+      {sudahJawab && (
+        <>
+          <div style={{ background: benar ? "#C8EFE0" : "#FFD6D6", borderRadius: "8px", padding: "10px 14px", marginBottom: "12px", border: benar ? "1.5px solid #4A8B6F" : "1.5px solid #C0392B" }}>
+            <p style={{ margin: "0 0 4px", fontWeight: "800", fontSize: "13px", color: benar ? "#2D5A3F" : "#7A2828" }}>{benar ? "✅ Benar!" : "❌ Salah!"}</p>
+            <p style={{ margin: 0, fontSize: "12px", color: "#3D405B", lineHeight: "1.6" }}>{current.penjelasan}</p>
+          </div>
+          <button onClick={handleNext}
+            style={{ background: "#5C9EA1", color: "white", border: "none", borderRadius: "8px", padding: "9px 18px", fontSize: "13px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
+            {step + 1 >= quiz.length ? "Lihat Skor" : "Soal Berikutnya →"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
 function ModalDetail({ item, onTutup }) {
   if (!item) return null;
   return (
@@ -854,19 +979,15 @@ function ModalDetail({ item, onTutup }) {
             </a>
           </div>
 
-          <div
-            style={{
-              background: "#F0EBFF",
-              borderRadius: "12px",
-              padding: "14px 18px",
-              marginBottom: "22px",
-              border: "1px solid #C4B5F4",
-            }}
-          >
-            <p style={{ margin: 0, fontSize: "13px", color: "#5A4A8A", lineHeight: "1.7" }}>
-              <b>Tips:</b> Tonton filmnya dulu biar tahu gambaran ceritanya, lalu baca bukunya untuk pengalaman yang jauh lebih lengkap!
-            </p>
-          </div>
+          {item.quiz ? (
+            <QuizBox key={item.film} quiz={item.quiz} />
+          ) : (
+            <div style={{ background: "#F0EBFF", borderRadius: "12px", padding: "14px 18px", marginBottom: "22px", border: "1px solid #C4B5F4" }}>
+              <p style={{ margin: 0, fontSize: "13px", color: "#5A4A8A", lineHeight: "1.7" }}>
+                <b>Tips:</b> Tonton filmnya dulu biar tahu gambaran ceritanya, lalu baca bukunya untuk pengalaman yang jauh lebih lengkap!
+              </p>
+            </div>
+          )}
 
           <button
             onClick={onTutup}
@@ -910,10 +1031,10 @@ function DariFilmKeBuku() {
     <div style={{ padding: "36px 24px", fontFamily: "'Segoe UI', Tahoma, sans-serif" }}>
 
       <h1 style={{ textAlign: "center", color: WARNA.teal, fontSize: "30px", fontWeight: "800", marginBottom: "6px" }}>
-        📚 Dari Film ke Buku
+        📚 From Book to Movie
       </h1>
       <p style={{ textAlign: "center", color: WARNA.abu, fontSize: "15px", marginBottom: "28px" }}>
-        Film favoritmu punya novelnya! Yuk lanjutkan petualangannya lewat buku
+        Film favoritmu berawal dari cerita yang luar biasa. Yuk baca bukunya!
       </p>
 
       <div style={{ maxWidth: "500px", margin: "0 auto 20px" }}>

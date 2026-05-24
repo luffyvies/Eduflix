@@ -275,10 +275,10 @@ const soalPool = [
     pembahasan: "Horor adalah genre film yang dirancang untuk membuat penonton merasa takut, tegang, dan bergidik. Biasanya mengandung unsur supranatural, monster, atau situasi berbahaya."
   },
   {
-    pertanyaan: "Film yang bercerita tentang kisah cinta antara dua orang termasuk genre apa?",
-    pilihan: ["Drama", "Romansa", "Komedi", "Petualangan"],
+    pertanyaan: "Film animasi 'Zootopia' dari Disney menyampaikan pesan tentang apa?",
+    pilihan: ["Pentingnya menjaga lingkungan", "Prasangka dan diskriminasi harus dihapuskan", "Persaingan dalam olahraga", "Teknologi masa depan"],
     jawaban: 1,
-    pembahasan: "Romansa (Romance) adalah genre film yang berpusat pada kisah cinta dan hubungan romantis antar karakter. Sering dikombinasikan menjadi Rom-Com (Romantic Comedy)."
+    pembahasan: "Zootopia (2016) menyampaikan pesan kuat tentang prasangka, stereotip, dan diskriminasi — bahwa siapapun bisa menjadi apapun yang mereka impikan tanpa dibatasi latar belakangnya."
   },
   {
     pertanyaan: "Komposer film terkenal yang membuat musik untuk Star Wars dan Harry Potter adalah?",

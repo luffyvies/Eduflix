@@ -3,7 +3,7 @@ import { useState } from "react";
 const data = [
   {
     emoji: "🎞️",
-    title: "Apa itu Film?",
+    title: "Apa Film Itu ?",
     short: "Pengertian dasar film sebagai media audio-visual",
     full: "Film adalah rangkaian gambar diam yang diputar cepat (~[24 frame/detik]) sehingga tampak bergerak. Film merupakan media [audio-visual] yang menggabungkan seni [musik], [teater], dan [sastra] untuk menyampaikan cerita dan emosi kepada penonton. Film juga termasuk bagian dari [literasi digital] yang penting dipahami.",
     terms: {
